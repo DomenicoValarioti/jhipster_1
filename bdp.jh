@@ -1,0 +1,272 @@
+
+entity Negoziazione(t_negoziazione) {
+  id Integer
+  aic6  String
+  idRichiestaEsterna String
+  dataDomanda Instant
+  sistemaEsterno String
+  codiceSis String
+  codiceStato String
+  biennio Integer
+  dataPubblicazione Instant
+  dataEfficaciaDetermina Instant
+  dataAnnullamentoProcedura Instant
+  dataConclusioneProcedura Instant
+}
+
+entity Allegato(t_allegato){
+	id Integer
+    descrizione Integer
+}
+
+entity Confezione(t_confezione){
+	id Integer
+	aic9 String
+    prezzoPublico Double
+    prezzoExFactory Double
+    percentualeScontoSsn Integer
+    scontoSsn Double
+    prezzoMaxCessione Double
+    percentualeIva Double
+    iva Double
+    prezzoPubblicoNettoIVA Double
+    fattoreConversionePrezzoPP Double
+    fattoreConversionePrezzoEF Double
+    haScontoConfidenziale Boolean
+    beneficioInnovativita Boolean
+    codiceStatoConfezione  String
+    tipoPianoTerapeutico String
+    notaAifa String
+}
+
+
+entity IndicazionePosologia(t_ind_pos){
+	id Integer
+    descrizione TextBlob
+    codiceVariazione String
+    isRimborsoAzienda Boolean
+    tipoPianoTerapeutico String
+    numeroRegistro String
+    tipo TipoIndPosEnum
+    isEstesa Boolean
+    numeroNotaAifa String
+}
+
+enum TipoIndPosEnum {
+	INDICAZIONE (I),
+	POSOLOGIA (P)
+}
+
+entity Iva(t_iva){
+  id Integer
+  valore Float
+  dataInizioValidita Instant
+  tipoSostanza TipoSostanzaEnum 
+}
+
+enum TipoSostanzaEnum {
+	GAS, 
+    ALTRO
+}
+
+entity FattoreConversione(t_fattore_conversione){
+	id Integer
+	valore Float
+	codice String
+	dataInizioValidita Instant
+	isMedicinaleEquivalente Boolean
+	classeRimborsabilita String
+}
+
+entity AccordoNegoziale(t_accordo_neg){
+    id Integer
+    natura String
+    durataContratto String
+    condizioniAggiuntive String
+    clausolaEsclusioneRinnovoAutomatico Boolean
+    clausolaUnaTantum Boolean
+    dataFirmaContratto Instant
+    dataScadenzaContratto Instant
+    dataChiusuraContratto Instant
+    dataFineProcRineg Instant
+    codiceAccordoPrec Integer
+}
+
+entity AccordoMEA(t_accordo_mea){
+    id Integer
+    tipo String
+    sottotipo String
+    tipoEliminazione String
+    unitaMisura String
+    misura Integer
+    percSconto Double
+    percPayback Double
+}
+
+entity Tranche(t_tranche){
+	percentuale Integer
+	numeroGiorni Integer
+	descrizione String
+}
+
+entity AccordoExtraMEA( t_accordo_extra_mea){
+	id Integer
+	tipo String
+	valoreTettoSpesa Double
+	dataInizio Instant
+	dataFinale Instant
+	dataInizioMonitoraggio Instant
+}
+
+entity Scaglione( t_scaglione){ 
+	id Integer
+	tipo String
+	sottotipo  String
+	da Double
+	a Double
+	percentualeSconto Double
+}
+
+
+entity PrezziRetail(t_prezzi_retail){
+	id Integer
+	prezzoPP Double
+	prezzoEF Double
+	riduzioniLegge1Prezzo Double
+	riduzioniLegge2Prezzo Double
+	riduzioniSelettive Double
+	dataInizioValidita Instant
+}
+
+
+entity PrezziMaxCesAcqDir(t_prezzi_max_ces){
+	id Integer
+    prezzoPMC Double
+	prezzoEF Double
+	riduzioniLegge1Prezzo Double
+	riduzioniLegge2Prezzo Double
+	dataInizioValidita Instant
+}
+
+
+
+/**** TIPOLOGCHE ****/
+entity StatoNegoziazione(tp_stato_pratica){
+	codice String
+	descrizione String
+}
+entity StatoIndicazionePosologia(tp_stato_ind_pos){
+	codice String
+	descrizione String
+}
+entity TipoNegoziazione(tp_tipo_negoziazione){
+	codice String
+	descrizione String 
+}
+
+
+/**** ********* ****/
+
+
+
+/**** LOG - STORICO ****/
+entity StoricoNegoziazione(st_negoziazione){
+  id Integer
+  idOriginale Integer
+  dataStorico Instant
+  aic6  Integer
+  idRichiestaEsterna String
+  dataDomanda Instant
+  sistemaEsterno String
+  codiceStato String
+  biennio Integer
+  dataPubblicazione Instant
+  dataEfficaciaDetermina Instant
+  dataAnnullamentoProcedura Instant
+  dataConclusioneProcedura Instant
+}
+
+entity StoricoIndicazionePosologia(st_ind_pos){
+	id Integer
+  	idOriginale Integer
+  	dataStorico Instant
+    descrizione TextBlob
+    codiceVariazione String
+    isRimborsoAzienda Boolean
+    tipoPianoTerapeutico String
+    hasRegistro Boolean
+    hasNota Boolean
+    tipo TipoIndPosEnum
+    isEstesa Boolean
+    notaAifa String
+}
+
+entity StoricoConfezione(st_confezione){
+	id Integer
+  	idOriginale Integer
+  	dataStorico Instant
+	aic9 String
+    prezzoPublico Double
+    prezzoExFactory Double
+    percentualeScontoSsn Integer
+    scontoSsn Double
+    prezzoMaxCessione Double
+    percentualeIva Double
+    iva Double
+    prezzoPubblicoNettoIVA Double
+    fattoreConversionePrezzoPP Double
+    fattoreConversionePrezzoEF Double
+    haScontoConfidenziale Boolean
+    beneficioInnovativita Boolean
+    codiceStatoConfezione  String
+    tipoPianoTerapeutico String
+    notaAifa String
+}
+/**** ********* ****/
+
+relationship OneToMany {
+ Negoziazione to Confezione
+ Negoziazione to IndicazionePosologia
+ Negoziazione to AccordoNegoziale
+ Negoziazione to AccordoMEA
+ AccordoMEA to IndicazionePosologia
+ AccordoMEA to Tranche
+ Negoziazione to AccordoExtraMEA
+ AccordoExtraMEA to Confezione
+ AccordoExtraMEA to Scaglione
+ AccordoNegoziale to Confezione
+ Confezione to Allegato
+ Negoziazione to Allegato // allegati del farmaco
+ IndicazionePosologia to Allegato
+}
+
+
+relationship ManyToOne {
+   Negoziazione{statoNegoziazione(codice)} to StatoNegoziazione
+   Negoziazione{tipoNegoziazione(codice)} to TipoNegoziazione
+   IndicazionePosologia{statoIndPos(codice)} to StatoIndicazionePosologia
+}    
+
+relationship OneToOne {
+	AccordoNegoziale{accordoMea(id)} to AccordoMEA
+	AccordoNegoziale{accordoExtraMea(id)} to AccordoExtraMEA
+    Confezione{prezziRetail(id)} to PrezziRetail
+    Confezione{prezziMaxCes(id)} to PrezziMaxCesAcqDir
+}
+
+//enum Language {
+//    ITALIANO, ENGLISH
+//}
+
+// Set pagination options
+//paginate Azienda, Azione, Ruolo with infinite-scroll
+//paginate Pratica, Notifica with pagination
+
+// Use Data Transfert Objects (DTO)
+ dto * with mapstruct
+
+// Set service options to all except few
+//service all with serviceImpl except Employee, Job
+
+// Set an angular suffix
+// angularSuffix * with mySuffix
